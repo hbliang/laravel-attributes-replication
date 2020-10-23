@@ -1,6 +1,6 @@
 {
-    "name": "hbliang/laravel-sync-attributes-between-models",
-    "description": "Laravel Sync with attributes with models",
+    "name": "hbliang/laravel-attributes-replication",
+    "description": "Laravel Attributes Replication",
     "type": "library",
     "license": "MIT",
     "authors": [
