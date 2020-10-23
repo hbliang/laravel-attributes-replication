@@ -1,10 +1,10 @@
 # Laravel Sync Attributes between models
 
 ## Installation
-`composer require hbliang/laravel-sync-attributes-between models`
+`composer require hbliang/laravel-attributes-replication`
 
 ## Configuration
-`php artisan vendor:publish --provider="Hbliang\SyncAttributesBetweenModels\SyncServiceProvider"`
+`php artisan vendor:publish --provider="Hbliang\AttributesReplication\ReplicationServiceProvider"`
 
 ## Usage
 
