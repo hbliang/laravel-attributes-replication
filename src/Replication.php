@@ -2,8 +2,6 @@
 
 namespace Hbliang\AttributesReplication;
 
-use Illuminate\Support\Arr;
-
 class Replication
 {
     protected $model;
@@ -11,6 +9,7 @@ class Replication
     protected $force = false;
     protected $map = [];
     protected $events = [];
+    protected $passive = false;
 
     public function __construct($model)
     {
@@ -36,6 +35,11 @@ class Replication
     public function getRelation()
     {
         return $this->relation;
+    }
+
+    public function isPassive()
+    {
+        return $this->passive;
     }
 
     public function isForce()
@@ -70,6 +74,12 @@ class Replication
     public function event(...$events)
     {
         $this->events = $events;
+        return $this;
+    }
+
+    public function passive()
+    {
+        $this->passive = true;
         return $this;
     }
 }

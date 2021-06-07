@@ -4,6 +4,7 @@ namespace Hbliang\AttributesReplication\Traits;
 
 use Hbliang\AttributesReplication\Contracts\AttributesReplicatable;
 use Hbliang\AttributesReplication\Replication;
+use Hbliang\AttributesReplication\Helper;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -22,18 +23,24 @@ trait HasAttributesReplication
         foreach (static::$_attributesReplications as $replication) {
             foreach ($replication->getEvents() as $event) {
                 call_user_func([static::class, $event], function ($entity) use ($replication, $event) {
-                    $data = null;
-                    if (Str::endsWith($event, 'ing')) {
-                        $data = $entity->attributesToArrayByMap($replication->getMap(), 'isDirty');
-                    } else if (Str::endsWith($event, 'ed')) {
-                        $data = $entity->attributesToArrayByMap($replication->getMap(), 'wasChanged');
-                    }
+                    if ($replication->isPassive()) {
+                        $relationValue = $entity->getRelationValue($replication->getRelation());
+                        $entity->fill(Helper::attributesToArrayByMap($relationValue, $replication->getMap()));
+                        $entity->save();
+                    } else {
+                        $data = null;
+                        if (Str::endsWith($event, 'ing')) {
+                            $data = Helper::attributesToArrayByMap($entity, $replication->getMap(), 'isDirty');
+                        } else if (Str::endsWith($event, 'ed')) {
+                            $data = Helper::attributesToArrayByMap($entity, $replication->getMap(), 'wasChanged');
+                        }
 
-                    if (!empty($data)) {
-                        Collection::wrap($entity->getRelationValue($replication->getRelation()))->each(function ($relationValue) use ($data) {
-                            $relationValue->fill($data);
-                            $relationValue->save();
-                        });
+                        if (!empty($data)) {
+                            Collection::wrap($entity->getRelationValue($replication->getRelation()))->each(function ($relationValue) use ($data) {
+                                $relationValue->fill($data);
+                                $relationValue->save();
+                            });
+                        }
                     }
                 });
             }
@@ -47,17 +54,5 @@ trait HasAttributesReplication
         static::$_attributesReplications[] = $replication;
 
         return $replication;
-    }
-
-    protected function attributesToArrayByMap($map, $checkFunc = null)
-    {
-        $data = [];
-        foreach ($map as $from => $to) {
-            if (!$checkFunc || call_user_func([$this, $checkFunc], $from)) {
-                $data[$to] = $this->{$from};
-            }
-        }
-
-        return $data;
     }
 }

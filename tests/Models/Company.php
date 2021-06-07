@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Model;
 class Company extends Model implements AttributesReplicatable
 {
     use HasAttributesReplication;
-    protected $fillable = ['company', 'phone_number'];
+    protected $fillable = ['name', 'phone_number'];
 
     public static function registerAttributesReplication()
     {
         self::addAttributesReplication()
             ->map([
-                'company' => 'company',
+                'name' => 'company_name',
                 'phone_number' => 'phone_number',
             ])
             ->relation('users')

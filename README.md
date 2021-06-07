@@ -35,7 +35,7 @@ class Company extends Model implements AttributesReplicatable
     {
         self::addAttributesReplication()
             ->map([
-                'name' => 'company',
+                'name' => 'company_name',
             ])
             ->relation('users')
             ->event('saved');
@@ -44,6 +44,28 @@ class Company extends Model implements AttributesReplicatable
     public function users()
     {
         return $this->hasMany(User::class);
+    }
+}
+
+class User extends Model implements AttributesReplicatable
+{
+    use HasAttributesReplication;
+    protected $fillable = ['company_name'];
+
+    public static function registerAttributesReplication()
+    {
+        self::addAttributesReplication()
+            ->passive()
+            ->map([
+                'name' => 'company_name',
+            ])
+            ->relation('company')
+            ->event('created');
+    }
+
+    public function company()
+    {
+        return $this->hasMany(Company::class);
     }
 }
 ```

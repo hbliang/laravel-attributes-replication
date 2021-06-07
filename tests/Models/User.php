@@ -10,22 +10,36 @@ class User extends Model implements AttributesReplicatable
 {
     use HasAttributesReplication;
 
-    protected $fillable = ['name', 'company', 'phone_number'];
+    protected $fillable = ['name', 'company_name', 'phone_number'];
 
     public static function registerAttributesReplication()
     {
         self::addAttributesReplication()
             ->map([
-                'company' => 'company',
+                'company_name' => 'company_name',
                 'name' => 'user_name',
                 'phone_number' => 'number',
             ])
             ->relation('phone')
             ->event('saved');
+
+        self::addAttributesReplication()
+            ->passive()
+            ->map([
+                'name' => 'company_name',
+                'phone_number' => 'phone_number',
+            ])
+            ->relation('company')
+            ->event('created');
     }
 
     public function phone()
     {
         return $this->belongsTo(Phone::class);
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 }

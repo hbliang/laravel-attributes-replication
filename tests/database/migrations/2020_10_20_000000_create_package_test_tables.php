@@ -15,7 +15,7 @@ class CreatePackageTestTables extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('company');
+            $table->string('name');
             $table->string('phone_number');
             $table->timestamps();
         });
@@ -25,16 +25,16 @@ class CreatePackageTestTables extends Migration
             $table->unsignedBigInteger('company_id')->default(0);
             $table->unsignedBigInteger('phone_id')->default(0);
             $table->string('name');
-            $table->string('company');
-            $table->string('phone_number');
+            $table->string('company_name')->nullable();
+            $table->string('phone_number')->nullable();
             $table->timestamps();
         });
 
         Schema::create('phones', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('user_name');
-            $table->string('company');
             $table->string('number');
+            $table->string('user_name')->nullable();
+            $table->string('company_name')->nullable();
             $table->timestamps();
         });
     }

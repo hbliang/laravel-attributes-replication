@@ -12,43 +12,51 @@ class ModelTest extends TestCase
     {
         $company = $this->toCompany();
 
-        $company->company = 'new';
+        foreach ($company->users as $user) {
+            $this->assertEquals($user->name, 'name');
+            $this->assertEquals($user->company_name, 'company');
+            $this->assertEquals($user->phone_number, 'phone_number');
+            $this->assertEquals($user->phone->user_name, 'name');
+            $this->assertEquals($user->phone->company_name, 'company');
+            $this->assertEquals($user->phone->number, 'phone_number');
+        }
+
+        $company->name = 'new';
         $company->save();
 
 
         foreach ($company->users as $user) {
-            $this->assertEquals($user->company, 'new');
-            $this->assertEquals($user->phone_number, 'phone_number');
             $this->assertEquals($user->name, 'name');
-            $this->assertEquals($user->phone->company, 'new');
-            $this->assertEquals($user->phone->number, 'number');
-            $this->assertEquals($user->phone->user_name, 'user_name');
+            $this->assertEquals($user->company_name, 'new');
+            $this->assertEquals($user->phone_number, 'phone_number');
+            $this->assertEquals($user->phone->user_name, 'name');
+            $this->assertEquals($user->phone->company_name, 'new');
+            $this->assertEquals($user->phone->number, 'phone_number');
 
             $user->name = 'ok';
             $user->save();
-            
-            $this->assertEquals($user->phone->company, 'new');
-            $this->assertEquals($user->phone->number, 'number');
+
+            $this->assertEquals($user->name, 'ok');
+            $this->assertEquals($user->company_name, 'new');
+            $this->assertEquals($user->phone_number, 'phone_number');
             $this->assertEquals($user->phone->user_name, 'ok');
+            $this->assertEquals($user->phone->company_name, 'new');
+            $this->assertEquals($user->phone->number, 'phone_number');
         }
     }
 
     protected function toCompany()
     {
         $company = Company::create([
-            'company' => 'company',
+            'name' => 'company',
             'phone_number' => 'phone_number',
         ]);
 
         $phone = Phone::create([
-            'user_name' => 'user_name',
-            'company' => 'company',
             'number' => 'number',
         ]);
 
         $user = new User([
-            'company' => 'company',
-            'phone_number' => 'phone_number',
             'name' => 'name',
         ]);
 
