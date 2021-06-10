@@ -2,6 +2,8 @@
 
 namespace Hbliang\AttributesReplication;
 
+use Illuminate\Support\Collection;
+
 class Replication
 {
     protected $model;
@@ -10,10 +12,12 @@ class Replication
     protected $map = [];
     protected $events = [];
     protected $passive = false;
+    protected $findPassiveModel;
 
     public function __construct($model)
     {
         $this->model = $model;
+        $this->setFindFirstPassiveModel();
         return $this;
     }
 
@@ -45,6 +49,11 @@ class Replication
     public function isForce()
     {
         return $this->force;
+    }
+
+    public function findPassiveModel(Collection $collection)
+    {
+        return call_user_func($this->findPassiveModel, $collection);
     }
 
     public function model($model)
@@ -80,6 +89,30 @@ class Replication
     public function passive()
     {
         $this->passive = true;
+        return $this;
+    }
+
+    public function setFindPassiveModel(\Closure $callable)
+    {
+        $this->findPassiveModel = $callable;
+        return $this;
+    }
+
+    public function setFindFirstPassiveModel()
+    {
+        $this->findPassiveModel = function (Collection $collection) {
+            return $collection->first();
+        };
+
+        return $this;
+    }
+
+    public function setFindLastPassiveModel()
+    {
+        $this->findPassiveModel = function (Collection $collection) {
+            return $collection->last();
+        };
+
         return $this;
     }
 }

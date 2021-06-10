@@ -25,6 +25,7 @@ trait HasAttributesReplication
                 call_user_func([static::class, $event], function ($entity) use ($replication, $event) {
                     if ($replication->isPassive()) {
                         $relationValue = $entity->getRelationValue($replication->getRelation());
+                        $relationValue = $replication->findPassiveModel(Collection::wrap($relationValue));
                         $entity->fill(Helper::attributesToArrayByMap($relationValue, $replication->getMap()));
                         $entity->save();
                     } else {
