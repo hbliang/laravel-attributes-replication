@@ -10,6 +10,7 @@ class Replication
     protected $relation;
     protected $force = false;
     protected $map = [];
+    protected $extra;
     protected $events = [];
     protected $passive = false;
     protected $findPassiveModel;
@@ -17,6 +18,9 @@ class Replication
     public function __construct($model)
     {
         $this->model = $model;
+        $this->extra = function() {
+            return [];
+        };
         $this->setFindFirstPassiveModel();
         return $this;
     }
@@ -29,6 +33,11 @@ class Replication
     public function getMap()
     {
         return $this->map;
+    }
+
+    public function getExtra()
+    {
+        return $this->extra;
     }
 
     public function getEvents()
@@ -83,6 +92,12 @@ class Replication
     public function event(...$events)
     {
         $this->events = $events;
+        return $this;
+    }
+
+    public function extra(callable $fn)
+    {
+        $this->extra = $fn;
         return $this;
     }
 

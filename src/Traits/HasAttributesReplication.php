@@ -29,12 +29,14 @@ trait HasAttributesReplication
                         $entity->fill(Helper::attributesToArrayByMap($relationValue, $replication->getMap()));
                         $entity->save();
                     } else {
-                        $data = null;
+                        $data = [];
                         if (Str::endsWith($event, 'ing')) {
                             $data = Helper::attributesToArrayByMap($entity, $replication->getMap(), 'isDirty');
                         } else if (Str::endsWith($event, 'ed')) {
                             $data = Helper::attributesToArrayByMap($entity, $replication->getMap(), 'wasChanged');
                         }
+
+                        $data = array_merge($data, Helper::extraAttributes($entity, $replication->getExtra()));
 
                         if (!empty($data)) {
                             Collection::wrap($entity->getRelationValue($replication->getRelation()))->each(function ($relationValue) use ($data) {

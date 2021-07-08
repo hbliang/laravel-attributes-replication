@@ -17,9 +17,14 @@ class User extends Model implements AttributesReplicatable
         self::addAttributesReplication()
             ->map([
                 'company_name' => 'company_name',
-                'name' => 'user_name',
+                // 'name' => 'user_name',
                 'phone_number' => 'number',
             ])
+            ->extra(function(User $user) {
+                return [
+                    'user_name' => $user->name,
+                ];
+            })
             ->relation('phone')
             ->event('saved');
 

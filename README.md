@@ -37,6 +37,12 @@ class Company extends Model implements AttributesReplicatable
             ->map([
                 'name' => 'company_name',
             ])
+            // or use extra
+            // ->extra(function(Company $company) {
+            //     return [
+            //         'company_name' => $company->name,
+            //     ];
+            // })
             ->relation('users')
             ->event('saved');
     }

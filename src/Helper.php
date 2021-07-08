@@ -17,4 +17,9 @@ class Helper
 
         return $data;
     }
+
+    public static function extraAttributes(Model $model, callable $fn)
+    {
+        return call_user_func($fn, $model);
+    }
 }
