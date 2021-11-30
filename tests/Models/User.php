@@ -33,7 +33,9 @@ class User extends Model implements AttributesReplicatable
             ->map([
                 'name' => 'company_name',
                 'phone_number' => 'phone_number',
+                'link' => 'company_link',
             ])
+            ->forceFill()
             ->relation('company')
             ->event('created');
     }

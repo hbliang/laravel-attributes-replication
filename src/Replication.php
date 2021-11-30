@@ -8,7 +8,7 @@ class Replication
 {
     protected $model;
     protected $relation;
-    protected $force = false;
+    protected $forceFill = false;
     protected $map = [];
     protected $extra;
     protected $events = [];
@@ -55,9 +55,9 @@ class Replication
         return $this->passive;
     }
 
-    public function isForce()
+    public function isForceFill()
     {
-        return $this->force;
+        return $this->forceFill;
     }
 
     public function findPassiveModel(Collection $collection)
@@ -83,9 +83,9 @@ class Replication
         return $this;
     }
 
-    public function forece($force = true)
+    public function forceFill($forceFill = true)
     {
-        $this->force = $force;
+        $this->forceFill = $forceFill;
         return $this;
     }
 

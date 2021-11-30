@@ -26,7 +26,13 @@ trait HasAttributesReplication
                     if ($replication->isPassive()) {
                         $relationValue = $entity->getRelationValue($replication->getRelation());
                         $relationValue = $replication->findPassiveModel(Collection::wrap($relationValue));
-                        $entity->fill(Helper::attributesToArrayByMap($relationValue, $replication->getMap()));
+
+                        if ($replication->isForceFill()) {
+                            $entity->forceFill(Helper::attributesToArrayByMap($relationValue, $replication->getMap()));
+                        } else {
+                            $entity->fill(Helper::attributesToArrayByMap($relationValue, $replication->getMap()));
+                        }
+
                         $entity->save();
                     } else {
                         $data = [];
@@ -39,8 +45,12 @@ trait HasAttributesReplication
                         $data = array_merge($data, Helper::extraAttributes($entity, $replication->getExtra()));
 
                         if (!empty($data)) {
-                            Collection::wrap($entity->getRelationValue($replication->getRelation()))->each(function ($relationValue) use ($data) {
-                                $relationValue->fill($data);
+                            Collection::wrap($entity->getRelationValue($replication->getRelation()))->each(function ($relationValue) use ($replication, $data) {
+                                if ($replication->isForceFill()) {
+                                    $relationValue->forceFill($data);
+                                } else {
+                                    $relationValue->fill($data);
+                                }
                                 $relationValue->save();
                             });
                         }

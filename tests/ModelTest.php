@@ -15,6 +15,7 @@ class ModelTest extends TestCase
         foreach ($company->users as $user) {
             $this->assertEquals($user->name, 'name');
             $this->assertEquals($user->company_name, 'company');
+            $this->assertEquals($user->company_link, 'link');
             $this->assertEquals($user->phone_number, 'phone_number');
             $this->assertEquals($user->phone->user_name, 'name');
             $this->assertEquals($user->phone->company_name, 'company');
@@ -22,12 +23,14 @@ class ModelTest extends TestCase
         }
 
         $company->name = 'new';
+        $company->link = 'new';
         $company->save();
 
 
         foreach ($company->users as $user) {
             $this->assertEquals($user->name, 'name');
             $this->assertEquals($user->company_name, 'new');
+            $this->assertEquals($user->company_link, 'new');
             $this->assertEquals($user->phone_number, 'phone_number');
             $this->assertEquals($user->phone->user_name, 'name');
             $this->assertEquals($user->phone->company_name, 'new');
@@ -38,6 +41,7 @@ class ModelTest extends TestCase
 
             $this->assertEquals($user->name, 'ok');
             $this->assertEquals($user->company_name, 'new');
+            $this->assertEquals($user->company_link, 'new');
             $this->assertEquals($user->phone_number, 'phone_number');
             $this->assertEquals($user->phone->user_name, 'ok');
             $this->assertEquals($user->phone->company_name, 'new');
@@ -45,11 +49,13 @@ class ModelTest extends TestCase
         }
     }
 
+
     protected function toCompany()
     {
         $company = Company::create([
             'name' => 'company',
             'phone_number' => 'phone_number',
+            'link' => 'link',
         ]);
 
         $phone = Phone::create([

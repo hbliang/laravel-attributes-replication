@@ -17,6 +17,7 @@ class CreatePackageTestTables extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('phone_number');
+            $table->string('link')->nullable();
             $table->timestamps();
         });
 
@@ -27,6 +28,7 @@ class CreatePackageTestTables extends Migration
             $table->string('name');
             $table->string('company_name')->nullable();
             $table->string('phone_number')->nullable();
+            $table->string('company_link')->nullable();
             $table->timestamps();
         });
 
