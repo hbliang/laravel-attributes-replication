@@ -26,14 +26,16 @@ trait HasAttributesReplication
                     if ($replication->isPassive()) {
                         $relationValue = $entity->getRelationValue($replication->getRelation());
                         $relationValue = $replication->findPassiveModel(Collection::wrap($relationValue));
+                        if ($relationValue) {
+                            if ($replication->isForceFill()) {
+                                $entity->forceFill(Helper::attributesToArrayByMap($relationValue, $replication->getMap()));
+                            } else {
+                                $entity->fill(Helper::attributesToArrayByMap($relationValue, $replication->getMap()));
+                            }
 
-                        if ($replication->isForceFill()) {
-                            $entity->forceFill(Helper::attributesToArrayByMap($relationValue, $replication->getMap()));
-                        } else {
-                            $entity->fill(Helper::attributesToArrayByMap($relationValue, $replication->getMap()));
+                            $entity->save();
                         }
 
-                        $entity->save();
                     } else {
                         $data = [];
                         if (Str::endsWith($event, 'ing')) {
