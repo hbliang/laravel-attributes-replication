@@ -59,7 +59,7 @@ trait HasAttributesReplication
                                 }
 
                                 if (is_callable($filterRelation)) {
-                                    call_user_func($filterRelation, $relationValue);
+                                    return call_user_func($filterRelation, $relationValue);
                                 }
 
                                 return true;

@@ -17,10 +17,23 @@ class Company extends Model implements AttributesReplicatable
             ->map([
                 'name' => 'company_name',
                 'phone_number' => 'phone_number',
+            ])
+            ->forceFill()
+            ->relation('users')
+            ->event('saved');
+
+        self::addAttributesReplication()
+            ->map([
                 'link' => 'company_link',
             ])
             ->forceFill()
             ->relation('users')
+            ->filterRelation(function(User $user) {
+                if ($user->name === 'TEST') {
+                    return true;
+                }
+                return false;
+            })
             ->event('saved');
     }
 

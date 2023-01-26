@@ -30,7 +30,7 @@ class ModelTest extends TestCase
         foreach ($company->users as $user) {
             $this->assertEquals($user->name, 'name');
             $this->assertEquals($user->company_name, 'new');
-            $this->assertEquals($user->company_link, 'new');
+            $this->assertEquals($user->company_link, 'link');
             $this->assertEquals($user->phone_number, 'phone_number');
             $this->assertEquals($user->phone->user_name, 'name');
             $this->assertEquals($user->phone->company_name, 'new');
@@ -41,11 +41,25 @@ class ModelTest extends TestCase
 
             $this->assertEquals($user->name, 'ok');
             $this->assertEquals($user->company_name, 'new');
-            $this->assertEquals($user->company_link, 'new');
+            $this->assertEquals($user->company_link, 'link');
             $this->assertEquals($user->phone_number, 'phone_number');
             $this->assertEquals($user->phone->user_name, 'ok');
             $this->assertEquals($user->phone->company_name, 'new');
             $this->assertEquals($user->phone->number, 'phone_number');
+        }
+
+        foreach ($company->users as $user) {
+            $user->name = 'TEST';
+            $user->save();
+        }
+
+
+        // TEST filter relation
+        $company->link = 'new2';
+        $company->save();
+
+        foreach ($company->users as $user) {
+            $this->assertEquals($user->company_link, 'new2');
         }
     }
 
