@@ -14,6 +14,7 @@ class Replication
     protected $events = [];
     protected $passive = false;
     protected $findPassiveModel;
+    protected $filterRelation = true;
 
     public function __construct($model)
     {
@@ -48,6 +49,11 @@ class Replication
     public function getRelation()
     {
         return $this->relation;
+    }
+
+    public function getFilterRelation()
+    {
+        return $this->filterRelation;
     }
 
     public function isPassive()
@@ -104,6 +110,12 @@ class Replication
     public function passive()
     {
         $this->passive = true;
+        return $this;
+    }
+
+    public function filterRelation($fn)
+    {
+        $this->filterRelation = $fn;
         return $this;
     }
 

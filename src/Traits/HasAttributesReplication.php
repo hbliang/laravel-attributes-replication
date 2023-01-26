@@ -47,7 +47,23 @@ trait HasAttributesReplication
                         $data = array_merge($data, Helper::extraAttributes($entity, $replication->getExtra()));
 
                         if (!empty($data)) {
-                            Collection::wrap($entity->getRelationValue($replication->getRelation()))->each(function ($relationValue) use ($replication, $data) {
+                            Collection::wrap($entity->getRelationValue($replication->getRelation()))->filter(function($relationValue) use($replication) {
+                                if (!$relationValue) {
+                                    return false;
+                                }
+
+                                $filterRelation = $replication->getFilterRelation();
+
+                                if (is_bool($filterRelation)) {
+                                    return $filterRelation;
+                                }
+
+                                if (is_callable($filterRelation)) {
+                                    call_user_func($filterRelation, $relationValue);
+                                }
+
+                                return true;
+                            })->each(function ($relationValue) use ($replication, $data) {
                                 if ($replication->isForceFill()) {
                                     $relationValue->forceFill($data);
                                 } else {
